@@ -1,0 +1,73 @@
+﻿@page "/"
+@inject EventEase.Services.UserSessionService session
+
+<h1>🎉 EventEase - Events</h1>
+
+<!-- ✅ Show logged-in user -->
+@if (session.IsLoggedIn)
+{
+    <p style="color:green;">Welcome, @session.UserName 👋</p>
+}
+else
+{
+    <p style="color:red;">You are not logged in.</p>
+}
+
+<hr />
+
+@if (events == null || events.Count == 0)
+{
+    <p>No events available.</p>
+}
+else
+{
+    @foreach (var ev in events)
+    {
+        <div style="border:1px solid gray; padding:10px; margin:10px;">
+            
+            <!-- Event Card -->
+            <EventCard @key="ev.Id"
+                       EventName="@ev.Name"
+                       EventDate="@ev.Date"
+                       Location="@ev.Location"
+                       DetailsLink="/event-details" />
+
+            <!-- ✅ Attendance Button -->
+            <button @onclick="() => MarkAttendance(ev.Id)">
+                Mark Attendance
+            </button>
+
+            <!-- ✅ Show Attendance Status -->
+            @if (attendedEvents.Contains(ev.Id))
+            {
+                <p style="color:green;">✔ Attending</p>
+            }
+        </div>
+    }
+}
+
+@code {
+    // ✅ Event Model
+    class EventModel
+    {
+        public int Id { get; set; }
+        public string? Name { get; set; }
+        public string? Date { get; set; }
+        public string? Location { get; set; }
+    }
+
+    // ✅ Event Data
+    List<EventModel> events = new()
+    {
+        new EventModel { Id = 1, Name = "Tech Conference", Date = "April 25, 2026", Location = "Hyderabad" },
+        new EventModel { Id = 2, Name = "Music Fest", Date = "May 10, 2026", Location = "Bangalore" }
+    };
+
+    // ✅ Attendance Tracker
+    HashSet<int> attendedEvents = new();
+
+    void MarkAttendance(int eventId)
+    {
+        attendedEvents.Add(eventId);
+    }
+}

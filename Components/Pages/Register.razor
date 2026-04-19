@@ -1,0 +1,57 @@
+@page "/register"
+@using System.ComponentModel.DataAnnotations
+@inject EventEase.Services.UserSessionService session
+
+<h3>📝 Event Registration</h3>
+
+<EditForm Model="user" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div>
+        <label>Name:</label><br />
+        <InputText @bind-Value="user.Name" />
+        <ValidationMessage For="@(() => user.Name)" />
+    </div>
+
+    <br />
+
+    <div>
+        <label>Email:</label><br />
+        <InputText @bind-Value="user.Email" />
+        <ValidationMessage For="@(() => user.Email)" />
+    </div>
+
+    <br />
+
+    <button type="submit">Register</button>
+</EditForm>
+
+@if (isRegistered)
+{
+    <p style="color:green;">✅ Successfully Registered!</p>
+}
+
+@code {
+    UserModel user = new();
+    bool isRegistered = false;
+
+    // ✅ This is where your method goes
+    void HandleValidSubmit()
+    {
+        session.UserName = user.Name;
+        session.IsLoggedIn = true;
+        isRegistered = true;
+    }
+
+    // ✅ Model with validation
+    public class UserModel
+    {
+        [Required(ErrorMessage = "Name is required")]
+        public string? Name { get; set; }
+
+        [Required(ErrorMessage = "Email is required")]
+        [EmailAddress(ErrorMessage = "Invalid Email")]
+        public string? Email { get; set; }
+    }
+}

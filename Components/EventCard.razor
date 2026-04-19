@@ -1,0 +1,21 @@
+<div style="border:1px solid gray; padding:10px; margin:10px;">
+    <h3>@DisplayName</h3>
+    <p>Date: @DisplayDate</p>
+    <p>Location: @DisplayLocation</p>
+
+    <a href="@SafeLink">View Details</a>
+</div>
+
+@code {
+    [Parameter] public string? EventName { get; set; }
+    [Parameter] public string? EventDate { get; set; }
+    [Parameter] public string? Location { get; set; }
+    [Parameter] public string? DetailsLink { get; set; }
+
+    // ✅ Safe display values
+    private string DisplayName => string.IsNullOrWhiteSpace(EventName) ? "No Event Name" : EventName;
+    private string DisplayDate => string.IsNullOrWhiteSpace(EventDate) ? "Date not available" : EventDate;
+    private string DisplayLocation => string.IsNullOrWhiteSpace(Location) ? "Location not available" : Location;
+
+    private string SafeLink => string.IsNullOrWhiteSpace(DetailsLink) ? "#" : DetailsLink;
+}
